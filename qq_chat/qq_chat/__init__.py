@@ -101,7 +101,7 @@ def on_user_info(server: PluginServerInterface, info):
 def on_message(server: PluginServerInterface, bot: CQHttp,
                event: MessageEvent):
     # command
-    if event.content.startswith('/'):
+    if event.content.startswith('#'):
         return on_qq_command(server, bot, event)
 
     # forward
@@ -112,7 +112,7 @@ def on_message(server: PluginServerInterface, bot: CQHttp,
         else:
             bot.sync.send_group_msg(
                 group_id=event.group_id,
-                message=f'[CQ:at,qq={user_id}] 无法转发您的消息, 请绑定游戏ID'
+                message=f'[CQ:at,qq={user_id}] 无法转发您的消息, 请使用 #bound <ID> 绑定游戏 ID'
             )
 
 
