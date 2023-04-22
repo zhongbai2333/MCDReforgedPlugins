@@ -29,26 +29,26 @@ data: dict
 final_bot: CQHttp
 event_loop: AbstractEventLoop
 group_help_msg = '''命令帮助如下:
-/list 获取在线玩家列表
-/bound <ID> 绑定你的游戏ID
-/mc <msg> 向游戏内发送消息
+#list 获取在线玩家列表
+#bound <ID> 绑定你的游戏ID
+#mc <msg> 向游戏内发送消息
 '''
 admin_help_msg = '''管理员命令帮助如下
-/bound 查看绑定相关帮助
-/whitelist 查看白名单相关帮助
-/command <command> 执行任意指令
+#bound 查看绑定相关帮助
+#whitelist 查看白名单相关帮助
+#command <command> 执行任意指令
 '''
-bound_help = '''/bound list 查看绑定列表
-/bound check <qq number> 查询绑定ID
-/bound unbound <qq number> 解除绑定
-/bound <qq number> <ID> 绑定新ID
+bound_help = '''#bound list 查看绑定列表
+#bound check <qq number> 查询绑定ID
+#bound unbound <qq number> 解除绑定
+#bound <qq number> <ID> 绑定新ID
 '''
-whitelist_help = '''/whitelist add <target> 添加白名单成员
-/whitelist list 列出白名单成员
-/whitelist off 关闭白名单
-/whitelist on 开启白名单
-/whitelist reload 重载白名单
-/whitelist remove <target> 删除白名单成员
+whitelist_help = '''#whitelist add <target> 添加白名单成员
+#whitelist list 列出白名单成员
+#whitelist off 关闭白名单
+#whitelist on 开启白名单
+#whitelist reload 重载白名单
+#whitelist remove <target> 删除白名单成员
 <target> 可以是玩家名/目标选择器/UUID
 '''
 
@@ -74,9 +74,9 @@ def on_load(server: PluginServerInterface, old):
             player = src.player if src.is_player else 'Console'
             send_msg_to_all_groups(f'[{player}] {ctx["message"]}')
 
-    server.register_help_message('!!qq <msg>', '向QQ群发送消息')
+    server.register_help_message(': <msg>', '向QQ群发送消息')
     server.register_command(
-        Literal('!!qq')
+        Literal(':')
         .then(
             GreedyText('message').runs(qq)
         )
@@ -144,7 +144,7 @@ def on_qq_command(server: PluginServerInterface, bot: CQHttp,
 
     # parse command
     command = event.content.split(' ')
-    command[0] = command[0].replace('/', '')
+    command[0] = command[0].replace('#', '')
 
     # common commands
     if config.commands['list'] and command[0] == 'list':
@@ -163,7 +163,7 @@ def on_qq_command(server: PluginServerInterface, bot: CQHttp,
         else:
             reply(
                 event,
-                f'[CQ:at,qq={user_id}] 请使用 /bound <ID> 绑定游戏 ID'
+                f'[CQ:at,qq={user_id}] 请使用 #bound <ID> 绑定游戏 ID'
             )
     # other commands
     else:
@@ -175,11 +175,11 @@ def on_qq_command(server: PluginServerInterface, bot: CQHttp,
 
 def private_command(server: PluginServerInterface, bot: CQHttp,
                     event: MessageEvent, command: List[str]):
-    if event.content == '/help':
+    if event.content == '#help':
         reply(event, admin_help_msg)
     # bound
-    elif event.content.startswith('/bound'):
-        if event.content == '/bound':
+    elif event.content.startswith('#bound'):
+        if event.content == '#bound':
             reply(event, bound_help)
         elif len(command) == 2 and command[1] == 'list':
             bound_list = [f'{a} - {b}' for a, b in data.items()]
@@ -205,13 +205,13 @@ def private_command(server: PluginServerInterface, bot: CQHttp,
             save_data(server)
             reply(event, '已成功绑定')
     # whitelist
-    elif event.content.startswith('/whitelist'):
-        if event.content == '/whitelist':
+    elif event.content.startswith('#whitelist'):
+        if event.content == '#whitelist':
             reply(event, whitelist_help)
         elif command[1] in ['add', 'remove', 'list', 'on', 'off', 'reload']:
             execute(server, event, event.content)
     # command
-    elif event.content.startswith('/command '):
+    elif event.content.startswith('#command '):
         command = event.content[9:]
         command = command.replace('&#91;', '[').replace('&#93;', ']')
         execute(server, event, command)
@@ -219,7 +219,7 @@ def private_command(server: PluginServerInterface, bot: CQHttp,
 
 def group_command(server: PluginServerInterface, bot: CQHttp,
                   event: MessageEvent, command: List[str]):
-    if event.content == '/help':
+    if event.content == '#help':
         reply(event, group_help_msg)
     # bound
     elif len(command) == 2 and command[0] == 'bound':
