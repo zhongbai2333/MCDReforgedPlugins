@@ -30,8 +30,7 @@ final_bot: CQHttp
 event_loop: AbstractEventLoop
 group_help_msg = '''命令帮助如下:
 #list 获取在线玩家列表
-#bound <ID> 绑定你的游戏ID
-#mc <msg> 向游戏内发送消息
+#bound ID 绑定你的游戏ID
 '''
 admin_help_msg = '''管理员命令帮助如下
 #bound 查看绑定相关帮助
@@ -112,7 +111,7 @@ def on_message(server: PluginServerInterface, bot: CQHttp,
         else:
             bot.sync.send_group_msg(
                 group_id=event.group_id,
-                message=f'[CQ:at,qq={user_id}] 无法转发您的消息, 请使用 #bound <ID> 绑定游戏 ID'
+                message=f'[CQ:at,qq={user_id}] 无法转发您的消息, 请使用 #bound ID 绑定游戏 ID'
             )
 
 
@@ -127,7 +126,7 @@ def on_notice(server: PluginServerInterface, bot: CQHttp, event: Event):
         if user_id in data.keys():
             command = f'whitelist remove {data[user_id]}'
             server.execute(command)
-            reply(event, f'{data[user_id]} 已退群，移除他的白名单')
+            reply(event, f'{data[user_id]} 已退群，已移除他的白名单')
             del data[user_id]
             save_data(server)
 
@@ -163,7 +162,7 @@ def on_qq_command(server: PluginServerInterface, bot: CQHttp,
         else:
             reply(
                 event,
-                f'[CQ:at,qq={user_id}] 请使用 #bound <ID> 绑定游戏 ID'
+                f'[CQ:at,qq={user_id}] 请使用 #bound ID 绑定游戏 ID'
             )
     # other commands
     else:
